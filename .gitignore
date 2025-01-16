@@ -3,12 +3,12 @@
 Thumbs.db
 
 # Ignorar arquivos e pastas gerados pelo Maven (backend Java)
-order-control-backend/target/
-order-control-backend/.idea/
-order-control-backend/.classpath
-order-control-backend/.project
-order-control-backend/.settings/
-order-control-backend/*.iml
+order-control/target/
+order-control/.idea/
+order-control/.classpath
+order-control/.project
+order-control/.settings/
+order-control/*.iml
 
 # Ignorar arquivos de log
 *.log
