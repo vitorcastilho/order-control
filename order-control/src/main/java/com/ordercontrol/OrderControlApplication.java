@@ -1,4 +1,4 @@
-package com.order_control;
+package com.ordercontrol;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
