@@ -35,14 +35,14 @@ docker-compose --version
 1. **Clone este repositório**:
 
    ```bash
-   git clone <URL_DO_REPOSITORIO>
-   cd src
+   git clone https://github.com/vitorcastilho/order-control
+   cd order-control
    ```
 
 2. **Certifique-se de que o diretório de dados do Postgres existe**:
 
    ```bash
-   mkdir -p ~/src/postgres/data
+   mkdir -p ~/development/src/postgres/data
    ```
 
 ---

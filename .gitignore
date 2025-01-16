@@ -1,0 +1,28 @@
+# Ignorar arquivos gerados pelo sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos e pastas gerados pelo Maven (backend Java)
+order-control-backend/target/
+order-control-backend/.idea/
+order-control-backend/.classpath
+order-control-backend/.project
+order-control-backend/.settings/
+order-control-backend/*.iml
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar configurações específicas de IDE
+*.idea/
+*.vscode/
+*.env
+
+# Ignorar diretórios do Docker
+postgres/data/
+**/postgres/data/
+
+# Ignorar arquivos temporários ou de cache
+*.tmp
+*.swp
+*.bak
