@@ -2,11 +2,11 @@ version: "3.9"
 services:
   db:
     image: postgres:17
-    container_name: postgres
+    container_name: postgres_order
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: order-control
+      POSTGRES_DB: order_control
     ports:
       - "5432:5432"
     volumes:
@@ -19,4 +19,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/castilho/Development/src/order_control/postgres/data
+      device: /home/castilho/development/src/order-control/postgres/data
