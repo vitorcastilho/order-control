@@ -2,7 +2,7 @@ package com.ordercontrol.infrastructure.api.v1.controller.client.dto;
 
 import com.ordercontrol.domain.model.Customer;
 
-public class CustomerDto {
+public class CustomerInsertDto {
 
 	private String name;
 	private String email;
