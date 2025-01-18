@@ -1,4 +1,4 @@
-package com.ordercontrol.infrastructure.api.v1.controller.client;
+package com.ordercontrol.infrastructure.api.v1.controller.customer;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ordercontrol.domain.model.Customer;
-import com.ordercontrol.domain.service.ICustomerService;
-import com.ordercontrol.infrastructure.api.v1.controller.client.dto.CustomerInsertDto;
+import com.ordercontrol.domain.service.customer.ICustomerService;
+import com.ordercontrol.infrastructure.api.v1.controller.customer.dto.CustomerInsertDto;
 
 @RestController
 @RequestMapping(CustomerController.API_URL)
