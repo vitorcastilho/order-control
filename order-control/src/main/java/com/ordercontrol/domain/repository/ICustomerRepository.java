@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ordercontrol.domain.model.Customer;
 
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface ICustomerRepository extends JpaRepository<Customer, Long> {
 
 }

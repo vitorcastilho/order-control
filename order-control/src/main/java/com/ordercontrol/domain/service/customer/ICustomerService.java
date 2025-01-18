@@ -1,4 +1,4 @@
-package com.ordercontrol.domain.service;
+package com.ordercontrol.domain.service.customer;
 
 import java.util.List;
 

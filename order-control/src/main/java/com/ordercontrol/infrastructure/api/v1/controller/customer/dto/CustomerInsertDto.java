@@ -1,4 +1,4 @@
-package com.ordercontrol.infrastructure.api.v1.controller.client.dto;
+package com.ordercontrol.infrastructure.api.v1.controller.customer.dto;
 
 import com.ordercontrol.domain.model.Customer;
 
