@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.ordercontrol.domain.model.OrderItem;
 import com.ordercontrol.domain.model.Product;
 
-public class OrderItemInsetDto {
+public class OrderItemInsertDto {
 
 	private Long productId;
 	private BigDecimal unitPrice;

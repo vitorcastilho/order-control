@@ -10,6 +10,6 @@ public class ApiVersionConfig implements WebMvcConfigurer {
 	@Override
 	public void configurePathMatch(PathMatchConfigurer configurer) {
 		configurer.addPathPrefix("api/v1",
-				clazz -> clazz.getPackageName().startsWith("com.ordercontrol.infrastructure.api.v1.controller"));
+				clazz -> clazz.getPackageName().startsWith("com.ordercontrol.web.api.v1.controller"));
 	}
 }
