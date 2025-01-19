@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ordercontrol.domain.model.CustomerOrder;
 import com.ordercontrol.domain.service.customerorder.ICustomerOrderService;
 import com.ordercontrol.infrastructure.api.v1.controller.customerorder.dto.CustomerOrderInsertDto;
+import com.ordercontrol.infrastructure.api.v1.controller.customerorder.dto.CustomerOrderResponseDto;
 
 @RestController
 @RequestMapping(CustomerOrderController.API_URL)
 public class CustomerOrderController {
 
 	public static final String API_URL = "/customer-orders";
-	
+
 	@Autowired
 	private ICustomerOrderService customerOrderService;
 
 	@GetMapping
-	public List<CustomerOrder> getCustomers() {
+	public List<CustomerOrderResponseDto> getCustomers() {
 		return customerOrderService.listAllCustomerOrders();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CustomerOrder> getClientById(@PathVariable Long id) {
+	public ResponseEntity<CustomerOrderResponseDto> getClientById(@PathVariable Long id) {
 		return ResponseEntity.ok(customerOrderService.getCustomerOrderById(id));
 	}
 
@@ -41,5 +41,5 @@ public class CustomerOrderController {
 		Long newCustomerId = customerOrderService.saveCustumerOrder(customerOrderInsertDto.convertToCustomerOrder());
 		return new ResponseEntity<>(newCustomerId, CREATED);
 	}
-	
+
 }
