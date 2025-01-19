@@ -1,6 +1,9 @@
 package com.ordercontrol.domain.model;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,22 +23,18 @@ public class CustomerOrder {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "number_order", nullable = false, unique = true)
+	@Column(name = "number_order", nullable = false, unique = true, length = 50)
 	private String numberOrder;
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id", nullable = false)
-	private Customer customer;
+	private Customer customerId;
 
-	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	@OneToMany(mappedBy = "customerOrderId", cascade = ALL, orphanRemoval = true)
+	private List<OrderItem> items;
 
-	@Column(name = "quantity", nullable = false)
-	private Integer quantity;
-
-	@Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-	private BigDecimal totalPrice;
+	@Column(name = "total_order", nullable = false, precision = 10, scale = 2)
+	private BigDecimal totalOrder;
 
 	public Long getId() {
 		return id;
@@ -52,36 +52,27 @@ public class CustomerOrder {
 		this.numberOrder = numberOrder;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public Customer getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerId(Customer customerId) {
+		this.customerId = customerId;
 	}
 
-	public Product getProduct() {
-		return product;
+	public List<OrderItem> getItems() {
+		return items;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setItems(List<OrderItem> items) {
+		this.items = items;
 	}
 
-	public Integer getQuantity() {
-		return quantity;
+	public BigDecimal getTotalOrder() {
+		return totalOrder;
 	}
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+	public void setTotalOrder(BigDecimal totalOrder) {
+		this.totalOrder = totalOrder;
 	}
-
-	public BigDecimal getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(BigDecimal totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-
 }
