@@ -1,14 +1,15 @@
 package com.ordercontrol.application.service.customer;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 import com.ordercontrol.domain.model.Customer;
+import com.ordercontrol.utils.pagination.CustomPageResponse;
 
 public interface ICustomerService {
 
-	List<Customer> listAllCustomers();
+	CustomPageResponse<Customer> listAllCustomers(Pageable pageable);
 
-	Customer getCustomerById(Long id);
+	Customer getCustomerById(Long customerId);
 
 	Long saveCustumer(Customer customer);
 
