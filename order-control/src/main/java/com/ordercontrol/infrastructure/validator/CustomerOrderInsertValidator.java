@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ordercontrol.application.dto.customerorder.CustomerOrderInsertDto;
-import com.ordercontrol.application.dto.customerorder.OrderItemInsetDto;
+import com.ordercontrol.application.dto.customerorder.OrderItemInsertDto;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
 import com.ordercontrol.infrastructure.exception.ValidationException;
 import com.ordercontrol.infrastructure.repository.ICustomerRepository;
@@ -19,6 +19,9 @@ public class CustomerOrderInsertValidator {
 
 	@Autowired
 	private ICustomerRepository customerRepository;
+
+	@Autowired
+	private ItemInsertValidator itemValidator;
 
 	public void validate(CustomerOrderInsertDto customerDto) {
 		validateCustomerId(customerDto.getCustomerId());
@@ -44,10 +47,13 @@ public class CustomerOrderInsertValidator {
 		}
 	}
 
-	private void validateItems(List<OrderItemInsetDto> items) {
+	private void validateItems(List<OrderItemInsertDto> items) {
 		if (items.size() < 1) {
 			throw new ValidationException("Items cannot be empty. At least one item must be added to customer order.",
 					"Ao menos um item deve ser adicionado ao pedido.");
+		}
+		for (OrderItemInsertDto itemDto : items) {
+			itemValidator.validate(itemDto);
 		}
 	}
 }

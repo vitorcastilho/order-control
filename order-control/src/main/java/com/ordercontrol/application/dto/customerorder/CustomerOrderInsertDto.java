@@ -6,7 +6,7 @@ public class CustomerOrderInsertDto {
 
 	private String numberOrder;
 	private Long customerId;
-	private List<OrderItemInsetDto> items;
+	private List<OrderItemInsertDto> items;
 
 	public String getNumberOrder() {
 		return numberOrder;
@@ -24,11 +24,11 @@ public class CustomerOrderInsertDto {
 		this.customerId = customerId;
 	}
 
-	public List<OrderItemInsetDto> getItems() {
+	public List<OrderItemInsertDto> getItems() {
 		return items;
 	}
 
-	public void setItems(List<OrderItemInsetDto> items) {
+	public void setItems(List<OrderItemInsertDto> items) {
 		this.items = items;
 	}
 }
