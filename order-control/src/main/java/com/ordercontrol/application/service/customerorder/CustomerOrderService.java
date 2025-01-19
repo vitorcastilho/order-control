@@ -1,5 +1,7 @@
 package com.ordercontrol.application.service.customerorder;
 
+import static com.ordercontrol.application.mapper.CustomerOrderMapper.convertToCustomerOrder;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +13,16 @@ import com.ordercontrol.application.dto.customerorder.CustomerOrderResponseDto;
 import com.ordercontrol.domain.model.CustomerOrder;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
 import com.ordercontrol.infrastructure.repository.ICustomerOrderRepository;
+import com.ordercontrol.infrastructure.validator.CustomerOrderInsertValidator;
 
 @Service
 public class CustomerOrderService implements ICustomerOrderService {
 
 	@Autowired
 	private ICustomerOrderRepository customerOrderRepository;
+
+	@Autowired
+	private CustomerOrderInsertValidator validator;
 
 	@Override
 	public List<CustomerOrderResponseDto> listAllCustomerOrders() {
@@ -34,8 +40,8 @@ public class CustomerOrderService implements ICustomerOrderService {
 
 	@Override
 	public Long saveCustumerOrder(CustomerOrderInsertDto customerOrderInsertDto) {
-		CustomerOrder newCustomerOrder = customerOrderRepository.save(customerOrderInsertDto.convertToCustomerOrder());
+		validator.validate(customerOrderInsertDto);
+		CustomerOrder newCustomerOrder = customerOrderRepository.save(convertToCustomerOrder(customerOrderInsertDto));
 		return newCustomerOrder.getId();
 	}
-
 }
