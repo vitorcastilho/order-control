@@ -11,12 +11,22 @@ public class OrderItemResponseDto {
 	private Integer quantity;
 	private BigDecimal totalItemPrice;
 
+	public OrderItemResponseDto() {
+	}
+
+	public OrderItemResponseDto(Long productId, BigDecimal unitPrice, Integer quantity, BigDecimal totalItemPrice) {
+		this.productId = productId;
+		this.unitPrice = unitPrice;
+		this.quantity = quantity;
+		this.totalItemPrice = totalItemPrice;
+	}
+
 	public OrderItemResponseDto(OrderItem orderItem) {
-        this.productId = orderItem.getProduct().getId();
-        this.unitPrice = orderItem.getUnitPrice();
-        this.quantity = orderItem.getQuantity();
-        this.totalItemPrice = orderItem.getTotalItemPrice();
-    }
+		this.productId = orderItem.getProduct().getId();
+		this.unitPrice = orderItem.getUnitPrice();
+		this.quantity = orderItem.getQuantity();
+		this.totalItemPrice = orderItem.getTotalItemPrice();
+	}
 
 	public Long getProductId() {
 		return productId;
