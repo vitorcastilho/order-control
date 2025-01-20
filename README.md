@@ -27,9 +27,13 @@ Verifique se o Docker está funcionando corretamente:
 ```bash
 docker --version
 docker-compose --version
-java -version
 ```
 
+Verifique se o Java está instalado corretamente:
+
+```bash
+java -version
+```
 ---
 
 ## Configuração Inicial
