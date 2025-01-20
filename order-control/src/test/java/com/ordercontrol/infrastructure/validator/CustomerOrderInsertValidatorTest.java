@@ -20,6 +20,7 @@ import com.ordercontrol.application.dto.customerorder.OrderItemInsertDto;
 import com.ordercontrol.domain.model.Customer;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
 import com.ordercontrol.infrastructure.exception.ValidationException;
+import com.ordercontrol.infrastructure.repository.ICustomerOrderRepository;
 import com.ordercontrol.infrastructure.repository.ICustomerRepository;
 import com.ordercontrol.infrastructure.repository.IProductRepository;
 
@@ -35,6 +36,8 @@ class CustomerOrderInsertValidatorTest {
 
 	@Mock
 	private ICustomerRepository customerRepository;
+	@Mock
+	private ICustomerOrderRepository customerOrderRepository;
 
 	@Mock
 	private IProductRepository productRepository;
@@ -88,6 +91,16 @@ class CustomerOrderInsertValidatorTest {
 			Validator.validate(customerOrderInsertDto);
 		});
 		Assertions.assertEquals("The numberOrder is mandatory information.", exception.getMessage());
+	}
+
+	@Test
+	void shouldThrowValidationException_whenNumberOrderAlreadyExists() {
+		Mockito.when(customerRepository.findById(any())).thenReturn(Optional.of(customerMock()));
+		Mockito.when(customerOrderRepository.existsByNumberOrder(any())).thenReturn(true);
+		ValidationException exception = Assertions.assertThrows(ValidationException.class, () -> {
+			Validator.validate(customerOrderInsertDtoMock());
+		});
+		Assertions.assertEquals("Number Order already exists: ABC", exception.getMessage());
 	}
 
 	@Test

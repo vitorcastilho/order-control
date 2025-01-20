@@ -35,7 +35,7 @@ public class CustomerOrder {
 	@JoinColumn(name = "customer_id", nullable = false)
 	private Customer customer;
 
-	@OneToMany(mappedBy = "customerOrderId", cascade = ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "customerOrder", cascade = ALL, orphanRemoval = true)
 	private List<OrderItem> items;
 
 	@Column(name = "total_order", nullable = false, precision = 10, scale = 2)

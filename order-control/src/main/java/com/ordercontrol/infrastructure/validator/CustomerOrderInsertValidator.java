@@ -12,6 +12,7 @@ import com.ordercontrol.application.dto.customerorder.CustomerOrderInsertDto;
 import com.ordercontrol.application.dto.customerorder.OrderItemInsertDto;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
 import com.ordercontrol.infrastructure.exception.ValidationException;
+import com.ordercontrol.infrastructure.repository.ICustomerOrderRepository;
 import com.ordercontrol.infrastructure.repository.ICustomerRepository;
 
 @Component
@@ -19,6 +20,9 @@ public class CustomerOrderInsertValidator {
 
 	@Autowired
 	private ICustomerRepository customerRepository;
+
+	@Autowired
+	ICustomerOrderRepository customerOrderRepository;
 
 	@Autowired
 	private ItemInsertValidator itemValidator;
@@ -48,6 +52,10 @@ public class CustomerOrderInsertValidator {
 		if (isEmpty(numberOrder)) {
 			throw new ValidationException("The numberOrder is mandatory information.",
 					"O número da ordem é uma informação obrigatória.");
+		}
+		if (customerOrderRepository.existsByNumberOrder(numberOrder)) {
+			throw new ValidationException("Number Order already exists: ".concat(numberOrder),
+					"Número do pedido já existe. Favor verificar o número do pedido fornecido.");
 		}
 	}
 

@@ -10,4 +10,6 @@ import com.ordercontrol.domain.model.enums.CustomerOrderStatus;
 public interface ICustomerOrderRepository extends JpaRepository<CustomerOrder, Long> {
 
 	Page<CustomerOrder> findOrderByStatus(CustomerOrderStatus orderStatus, Pageable pageable);
+	
+	boolean existsByNumberOrder(String numberOrder);
 }
