@@ -1,6 +1,6 @@
 # Projeto de gerenciamento de pedidos
 
-Este projeto utiliza Docker Compose para gerenciar o serviço de banco de dados (Postgres 17).
+Este projeto utiliza Docker Compose para gerenciar o serviço de banco de dados (Postgres 17) e um cache Redis 7.
 O objetivo é facilitar o setup do ambiente de desenvolvimento, garantindo que todos os serviços estejam configurados de forma consistente.
 
 ---
@@ -20,12 +20,14 @@ order_control/
 Certifique-se de que você tenha instalado:
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+- [Java 17](https://adoptium.net/?variant=openjdk17)
 
 Verifique se o Docker está funcionando corretamente:
 
 ```bash
 docker --version
 docker-compose --version
+java -version
 ```
 
 ---
@@ -78,5 +80,28 @@ docker-compose --version
   - Usuário: `postgres`
   - Senha: `postgres`
   - Banco de dados: `order-control`
+- **Redis**
+  - Host: `localhost`
+  - Porta: `6379`
+
+---
+
+## Subindo o backend(Java 17 Spring Boot)
+
+1. **Navegue até o diretório** `backend/`
+   ```bash
+   cd order-control
+   ```
+
+2. **Compile e execute o projeto Spring Boot**:
+   Se você estiver utilizando o Maven:
+   ```bash
+   cmvn spring-boot:run
+   ```
+   O backend será iniciado e você poderá acessá-lo em http://localhost:8080.
+
+---
+
+Com essas configurações, o ambiente de desenvolvimento estará pronto para uso com Docker, Postgres, Redis e o backend em Java 17 com Spring Boot.
 
 ---
