@@ -3,6 +3,9 @@ package com.ordercontrol.application.service.customerorder;
 import static com.ordercontrol.application.mapper.CustomerOrderMapper.convertToCustomerOrder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,10 +38,12 @@ public class CustomerOrderService implements ICustomerOrderService {
 	@Override
 	public CustomPageResponse<CustomerOrderResponseDto> listAllCustomerOrders(Pageable pageable) {
 		Page<CustomerOrder> customerOrdersPage = customerOrderRepository.findAll(pageable);
+		customerOrdersPage.forEach(order -> cacheCustomerOrder(order));
 		return CustomPageResponse.fromPage(customerOrdersPage, CustomerOrderResponseDto::new);
 	}
 
 	@Override
+	@Cacheable(value = "customerOrders", key = "#customerOrderId")
 	public CustomerOrderResponseDto getCustomerOrderById(Long customerOrderId) {
 		CustomerOrder customerOrder = customerOrderRepository.findById(customerOrderId)
 				.orElseThrow(() -> new ResourceNotFoundException(
@@ -54,6 +59,7 @@ public class CustomerOrderService implements ICustomerOrderService {
 		}
 		CustomerOrderStatus orderStatus = CustomerOrderStatus.valueOf(status);
 		Page<CustomerOrder> customerOrdersPage = customerOrderRepository.findOrderByStatus(orderStatus, pageable);
+		customerOrdersPage.forEach(order -> cacheCustomerOrder(order));
 		return CustomPageResponse.fromPage(customerOrdersPage, CustomerOrderResponseDto::new);
 	}
 
@@ -66,6 +72,7 @@ public class CustomerOrderService implements ICustomerOrderService {
 	}
 
 	@Override
+	@CacheEvict(value = "customerOrders", key = "#customerOrderId")
 	public CustomerOrderResponseDto updateOrderStatus(Long customerOrderId, String status) {
 		if (CustomerOrderStatus.valueOf(status) == null) {
 			throw new ValidationException("The reported status does not exist.", "O status informado não existe.");
@@ -86,5 +93,10 @@ public class CustomerOrderService implements ICustomerOrderService {
 			productService.updateQuantityOfProduct(product, quantityToRemove);
 
 		}
+	}
+
+	@CachePut(value = "customerOrders", key = "#customerOrder.id")
+	public CustomerOrderResponseDto cacheCustomerOrder(CustomerOrder customerOrder) {
+		return new CustomerOrderResponseDto(customerOrder);
 	}
 }

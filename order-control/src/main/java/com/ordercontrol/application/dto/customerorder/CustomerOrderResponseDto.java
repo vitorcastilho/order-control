@@ -16,6 +16,19 @@ public class CustomerOrderResponseDto {
 	private CustomerOrderStatus status;
 	private List<OrderItemResponseDto> items;
 
+	public CustomerOrderResponseDto() {
+	}
+
+	public CustomerOrderResponseDto(Long id, String numberOrder, Long customerId, BigDecimal totalOrder,
+			CustomerOrderStatus status, List<OrderItemResponseDto> items) {
+		this.id = id;
+		this.numberOrder = numberOrder;
+		this.customerId = customerId;
+		this.totalOrder = totalOrder;
+		this.status = status;
+		this.items = items;
+	}
+
 	public CustomerOrderResponseDto(CustomerOrder customerOrder) {
 		this.id = customerOrder.getId();
 		this.numberOrder = customerOrder.getNumberOrder();
