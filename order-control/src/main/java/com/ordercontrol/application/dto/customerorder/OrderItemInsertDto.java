@@ -15,7 +15,7 @@ public class OrderItemInsertDto {
 		OrderItem orderItem = new OrderItem();
 		Product product = new Product();
 		product.setId(productId);
-		orderItem.setProductId(product);
+		orderItem.setProduct(product);
 		orderItem.setUnitPrice(unitPrice);
 		orderItem.setQuantity(quantity);
 		orderItem.setTotalItemPrice(this.unitPrice.multiply(BigDecimal.valueOf(this.quantity)));

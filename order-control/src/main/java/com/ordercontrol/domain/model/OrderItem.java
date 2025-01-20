@@ -22,11 +22,11 @@ public class OrderItem {
 
 	@ManyToOne
 	@JoinColumn(name = "customer_order_id", nullable = false)
-	private CustomerOrder customerOrderId;
+	private CustomerOrder customerOrder;
 
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
-	private Product productId;
+	private Product product;
 
 	@Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
 	private BigDecimal unitPrice;
@@ -45,20 +45,20 @@ public class OrderItem {
 		this.id = id;
 	}
 
-	public CustomerOrder getCustomerOrderId() {
-		return customerOrderId;
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
 	}
 
-	public void setCustomerOrderId(CustomerOrder customerOrderId) {
-		this.customerOrderId = customerOrderId;
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 	public BigDecimal getUnitPrice() {

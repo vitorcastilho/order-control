@@ -15,11 +15,11 @@ public class CustomerOrderMapper {
 		customerOrder.setNumberOrder(customerDto.getNumberOrder());
 		Customer customer = new Customer();
 		customer.setId(customerDto.getCustomerId());
-		customerOrder.setCustomerId(customer);
+		customerOrder.setCustomer(customer);
 		customerOrder
 				.setItems(customerDto.getItems() != null ? customerDto.getItems().stream().map(orderItemInsertDto -> {
 					OrderItem orderItem = orderItemInsertDto.convertToOrderItem();
-					orderItem.setCustomerOrderId(customerOrder);
+					orderItem.setCustomerOrder(customerOrder);
 					return orderItem;
 				}).collect(Collectors.toList()) : null);
 		customerOrder.setTotalOrder(customerDto.getItems() != null ? customerDto.getItems().stream()

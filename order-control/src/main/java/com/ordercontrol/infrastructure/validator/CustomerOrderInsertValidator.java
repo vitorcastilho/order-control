@@ -34,6 +34,10 @@ public class CustomerOrderInsertValidator {
 			throw new ValidationException("The customer is mandatory information.",
 					"O cliente é uma informação obrigatória.");
 		}
+		validateIfCustomerExists(customerId);
+	}
+
+	private void validateIfCustomerExists(Long customerId) {
 		if (!customerRepository.findById(customerId).isPresent()) {
 			throw new ResourceNotFoundException("Customer not found with Id: ".concat(customerId.toString()),
 					"Cliente não encontrado. Favor verificar o id fornecido.");

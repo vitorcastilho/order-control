@@ -13,4 +13,6 @@ public interface IProductService {
 
 	Long saveProduct(Product product);
 
+	void updateQuantityOfProduct(Product product, Integer amountToAddOrRemove);
+
 }

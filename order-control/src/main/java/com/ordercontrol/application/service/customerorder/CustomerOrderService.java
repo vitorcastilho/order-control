@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.ordercontrol.application.dto.customerorder.CustomerOrderInsertDto;
 import com.ordercontrol.application.dto.customerorder.CustomerOrderResponseDto;
+import com.ordercontrol.application.service.product.IProductService;
 import com.ordercontrol.domain.model.CustomerOrder;
+import com.ordercontrol.domain.model.OrderItem;
+import com.ordercontrol.domain.model.Product;
 import com.ordercontrol.domain.model.enums.CustomerOrderStatus;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
 import com.ordercontrol.infrastructure.exception.ValidationException;
@@ -22,6 +25,9 @@ public class CustomerOrderService implements ICustomerOrderService {
 
 	@Autowired
 	private ICustomerOrderRepository customerOrderRepository;
+
+	@Autowired
+	private IProductService productService;
 
 	@Autowired
 	private CustomerOrderInsertValidator validator;
@@ -55,6 +61,7 @@ public class CustomerOrderService implements ICustomerOrderService {
 	public Long saveCustumerOrder(CustomerOrderInsertDto customerOrderInsertDto) {
 		validator.validate(customerOrderInsertDto);
 		CustomerOrder newCustomerOrder = customerOrderRepository.save(convertToCustomerOrder(customerOrderInsertDto));
+		updateQuantityOfLeastRequestedProduct(newCustomerOrder);
 		return newCustomerOrder.getId();
 	}
 
@@ -70,5 +77,14 @@ public class CustomerOrderService implements ICustomerOrderService {
 		customerOrder.setStatus(CustomerOrderStatus.valueOf(status.toUpperCase()));
 		customerOrder = customerOrderRepository.save(customerOrder);
 		return new CustomerOrderResponseDto(customerOrder);
+	}
+
+	private void updateQuantityOfLeastRequestedProduct(CustomerOrder newCustomerOrder) {
+		for (OrderItem orderItem : newCustomerOrder.getItems()) {
+			Product product = productService.getProductById(orderItem.getProduct().getId());
+			Integer quantityToRemove = -orderItem.getQuantity();
+			productService.updateQuantityOfProduct(product, quantityToRemove);
+
+		}
 	}
 }

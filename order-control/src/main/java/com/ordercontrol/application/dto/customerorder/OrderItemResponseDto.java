@@ -12,7 +12,7 @@ public class OrderItemResponseDto {
 	private BigDecimal totalItemPrice;
 
 	public OrderItemResponseDto(OrderItem orderItem) {
-        this.productId = orderItem.getProductId().getId();
+        this.productId = orderItem.getProduct().getId();
         this.unitPrice = orderItem.getUnitPrice();
         this.quantity = orderItem.getQuantity();
         this.totalItemPrice = orderItem.getTotalItemPrice();

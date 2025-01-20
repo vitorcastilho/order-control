@@ -55,7 +55,7 @@ public class CustomerOrderController {
 		return new ResponseEntity<>(newCustomerId, CREATED);
 	}
 
-	@PatchMapping("/{orderId}/status")
+	@PatchMapping("/{customerOrderId}/status")
 	public ResponseEntity<CustomerOrderResponseDto> updateCustomerOrderStatus(@PathVariable Long customerOrderId,
 			@RequestBody CustomerOrderStatusUpdateDto statusUpdateDto) {
 		return ResponseEntity.ok(customerOrderService.updateOrderStatus(customerOrderId, statusUpdateDto.getStatus()));

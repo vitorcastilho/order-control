@@ -19,7 +19,7 @@ public class CustomerOrderResponseDto {
 	public CustomerOrderResponseDto(CustomerOrder customerOrder) {
 		this.id = customerOrder.getId();
 		this.numberOrder = customerOrder.getNumberOrder();
-		this.customerId = customerOrder.getCustomerId().getId();
+		this.customerId = customerOrder.getCustomer().getId();
 		this.totalOrder = customerOrder.getTotalOrder();
 		this.status = customerOrder.getStatus();
 		this.items = customerOrder.getItems().stream().map(OrderItemResponseDto::new).collect(Collectors.toList());
