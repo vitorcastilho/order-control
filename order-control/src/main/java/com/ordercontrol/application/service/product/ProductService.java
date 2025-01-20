@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ordercontrol.domain.model.Product;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
+import com.ordercontrol.infrastructure.exception.ValidationException;
 import com.ordercontrol.infrastructure.repository.IProductRepository;
 import com.ordercontrol.utils.pagination.CustomPageResponse;
 
@@ -33,6 +34,30 @@ public class ProductService implements IProductService {
 	public Long saveProduct(Product product) {
 		Product newProduct = productRepository.save(product);
 		return newProduct.getId();
+	}
+
+	@Override
+	public void updateQuantityOfProduct(Product product, Integer amountToAddOrRemove) {
+		if (amountToAddOrRemove < 0) {
+			decreaseProductStock(product, -amountToAddOrRemove);
+		} else {
+			increaseProductStock(product, amountToAddOrRemove);
+		}
+	}
+
+	private void decreaseProductStock(Product product, Integer quantityToRemove) {
+		if (product.getUnits() < quantityToRemove) {
+			throw new ValidationException(
+					"Not enough stock to decrease for product: ".concat(product.getId().toString()),
+					"Estoque insuficiente para diminuir o produto: ".concat(product.getName()));
+		}
+		product.setUnits(product.getUnits() - quantityToRemove);
+		productRepository.save(product);
+	}
+
+	private void increaseProductStock(Product product, Integer quantityToAdd) {
+		product.setUnits(product.getUnits() + quantityToAdd);
+		productRepository.save(product);
 	}
 
 }

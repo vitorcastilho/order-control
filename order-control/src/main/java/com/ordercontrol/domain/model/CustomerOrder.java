@@ -33,7 +33,7 @@ public class CustomerOrder {
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id", nullable = false)
-	private Customer customerId;
+	private Customer customer;
 
 	@OneToMany(mappedBy = "customerOrderId", cascade = ALL, orphanRemoval = true)
 	private List<OrderItem> items;
@@ -61,12 +61,12 @@ public class CustomerOrder {
 		this.numberOrder = numberOrder;
 	}
 
-	public Customer getCustomerId() {
-		return customerId;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCustomerId(Customer customerId) {
-		this.customerId = customerId;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public List<OrderItem> getItems() {
