@@ -8,8 +8,8 @@ O objetivo é facilitar o setup do ambiente de desenvolvimento, garantindo que t
 ## Estrutura do projeto
 
 ```plainttext
-order_control/
-|-- backend/            #Código backend (Java 17 Spring Boot)
+order-control/
+|-- order-control/      #Código backend (Java 17 Spring Boot)
 |-- postgres/data       #Dados persistidos do Postgres
 ```
 
