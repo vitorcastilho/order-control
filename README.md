@@ -92,7 +92,7 @@ java -version
 
 ## Subindo o backend(Java 17 Spring Boot)
 
-1. **Navegue até o diretório** `backend/`
+1. **Navegue até o diretório** `order-control/`
    ```bash
    cd order-control
    ```
