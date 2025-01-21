@@ -83,7 +83,7 @@ java -version
   - Porta: `5432`
   - Usuário: `postgres`
   - Senha: `postgres`
-  - Banco de dados: `order-control`
+  - Banco de dados: `order_control`
 - **Redis**
   - Host: `localhost`
   - Porta: `6379`
