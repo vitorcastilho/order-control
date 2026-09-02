@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -12,6 +13,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResponseMessage> handleResourceNotFoundException(ResourceNotFoundException exception) {
 		ResponseMessage response = new ResponseMessage(HttpStatus.NOT_FOUND.value(), exception.getDeveloperMessage(),
 				exception.getClientMessage());
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<ResponseMessage> handleNoResourceFoundException(NoResourceFoundException exception) {
+		ResponseMessage response = new ResponseMessage(HttpStatus.NOT_FOUND.value(), exception.getMessage(),
+				"Recurso não encontrado. Favor verificar a URL informada.");
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 

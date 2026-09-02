@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @DisplayName("GlobalExceptionHandler")
 class GlobalExceptionHandlerTest {
@@ -46,6 +48,18 @@ class GlobalExceptionHandlerTest {
 		assertEquals(500, response.getBody().getStatus());
 		assertEquals("falha inesperada", response.getBody().getDeveloperMessage());
 		assertEquals("Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+				response.getBody().getClientMessage());
+	}
+
+	@Test
+	@DisplayName("rota inexistente vira 404, e não 500")
+	void noResourceFound() {
+		ResponseEntity<ResponseMessage> response = handler
+				.handleNoResourceFoundException(new NoResourceFoundException(HttpMethod.GET, "/api/v1/inexistente"));
+
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+		assertEquals(404, response.getBody().getStatus());
+		assertEquals("Recurso não encontrado. Favor verificar a URL informada.",
 				response.getBody().getClientMessage());
 	}
 

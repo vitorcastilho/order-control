@@ -1,6 +1,7 @@
 package com.ordercontrol.application.service.customerorder;
 
 import static com.ordercontrol.application.mapper.CustomerOrderMapper.convertToCustomerOrder;
+import static com.ordercontrol.utils.TextUtils.isEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -54,10 +55,7 @@ public class CustomerOrderService implements ICustomerOrderService {
 
 	@Override
 	public CustomPageResponse<CustomerOrderResponseDto> getOrdersByStatus(String status, Pageable pageable) {
-		if (CustomerOrderStatus.valueOf(status) == null) {
-			throw new ValidationException("The reported status does not exist.", "O status informado não existe.");
-		}
-		CustomerOrderStatus orderStatus = CustomerOrderStatus.valueOf(status);
+		CustomerOrderStatus orderStatus = parseStatus(status);
 		Page<CustomerOrder> customerOrdersPage = customerOrderRepository.findOrderByStatus(orderStatus, pageable);
 		customerOrdersPage.forEach(order -> cacheCustomerOrder(order));
 		return CustomPageResponse.fromPage(customerOrdersPage, CustomerOrderResponseDto::new);
@@ -74,16 +72,27 @@ public class CustomerOrderService implements ICustomerOrderService {
 	@Override
 	@CacheEvict(value = "customerOrders", key = "#customerOrderId")
 	public CustomerOrderResponseDto updateOrderStatus(Long customerOrderId, String status) {
-		if (CustomerOrderStatus.valueOf(status) == null) {
-			throw new ValidationException("The reported status does not exist.", "O status informado não existe.");
-		}
+		CustomerOrderStatus newStatus = parseStatus(status);
 		CustomerOrder customerOrder = customerOrderRepository.findById(customerOrderId)
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Order not found with Id: ".concat(customerOrderId.toString()),
 						"Pedido não encontrado. Favor verificar o id fornecido."));
-		customerOrder.setStatus(CustomerOrderStatus.valueOf(status.toUpperCase()));
+		customerOrder.setStatus(newStatus);
 		customerOrder = customerOrderRepository.save(customerOrder);
 		return new CustomerOrderResponseDto(customerOrder);
+	}
+
+	private CustomerOrderStatus parseStatus(String status) {
+		if (isEmpty(status)) {
+			throw new ValidationException("The status is mandatory information.",
+					"O status é uma informação obrigatória.");
+		}
+		try {
+			return CustomerOrderStatus.valueOf(status.trim().toUpperCase());
+		} catch (IllegalArgumentException exception) {
+			throw new ValidationException("The reported status does not exist: ".concat(status),
+					"O status informado não existe.");
+		}
 	}
 
 	private void updateQuantityOfLeastRequestedProduct(CustomerOrder newCustomerOrder) {
