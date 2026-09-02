@@ -1,4 +1,4 @@
-package com.order_control;
+package com.ordercontrol;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

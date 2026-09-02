@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build e testes
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: order_control
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configura JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build e testes
+        working-directory: ./order-control
+        run: mvn -B verify
+
+      - name: Publica relatório de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: order-control/target/site/jacoco/
+
+      - name: Resumo da cobertura
+        if: always()
+        working-directory: ./order-control
+        run: |
+          CSV=target/site/jacoco/jacoco.csv
+          if [ -f "$CSV" ]; then
+            awk -F, 'NR>1 {miss+=$4; cov+=$5} END {
+              total=miss+cov
+              if (total>0) printf "Cobertura de instruções: %.1f%% (%d de %d)\n", cov*100/total, cov, total
+            }' "$CSV" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Relatório do JaCoCo não encontrado." >> $GITHUB_STEP_SUMMARY
+          fi
