@@ -33,6 +33,7 @@ import com.ordercontrol.domain.model.OrderItem;
 import com.ordercontrol.domain.model.Product;
 import com.ordercontrol.domain.model.enums.CustomerOrderStatus;
 import com.ordercontrol.infrastructure.exception.ResourceNotFoundException;
+import com.ordercontrol.infrastructure.exception.ValidationException;
 import com.ordercontrol.infrastructure.repository.ICustomerOrderRepository;
 import com.ordercontrol.infrastructure.validator.CustomerOrderInsertValidator;
 
@@ -131,12 +132,34 @@ class CustomerOrderServiceTest {
 		}
 
 		@Test
-		@DisplayName("status inexistente interrompe a consulta antes de tocar o repositório")
+		@DisplayName("aceita o status em minúsculas, normalizando antes de consultar")
+		void getOrdersByStatusAcceptsLowercase() {
+			Pageable pageable = PageRequest.of(0, 10);
+			when(customerOrderRepository.findOrderByStatus(eq(CustomerOrderStatus.PENDING), eq(pageable)))
+					.thenReturn(new PageImpl<>(List.of(order(1L, "PED-001", CustomerOrderStatus.PENDING)), pageable, 1));
+
+			var response = customerOrderService.getOrdersByStatus("pending", pageable);
+
+			assertEquals(1, response.getResults().size());
+		}
+
+		@Test
+		@DisplayName("status inexistente vira ValidationException e não toca o repositório")
 		void getOrdersByStatusRejectsUnknownStatus() {
-			assertThrows(IllegalArgumentException.class,
+			ValidationException exception = assertThrows(ValidationException.class,
 					() -> customerOrderService.getOrdersByStatus("INEXISTENTE", PageRequest.of(0, 10)));
 
+			assertEquals("O status informado não existe.", exception.getClientMessage());
 			verify(customerOrderRepository, never()).findOrderByStatus(any(), any());
+		}
+
+		@Test
+		@DisplayName("status vazio vira ValidationException")
+		void getOrdersByStatusRejectsBlankStatus() {
+			ValidationException exception = assertThrows(ValidationException.class,
+					() -> customerOrderService.getOrdersByStatus("   ", PageRequest.of(0, 10)));
+
+			assertEquals("O status é uma informação obrigatória.", exception.getClientMessage());
 		}
 	}
 
@@ -203,12 +226,14 @@ class CustomerOrderServiceTest {
 		}
 
 		@Test
-		@DisplayName("status em minúsculas é recusado, embora o método aplique toUpperCase ao gravar")
-		void rejectsLowercaseStatusDespiteToUpperCaseOnWrite() {
-			assertThrows(IllegalArgumentException.class,
-					() -> customerOrderService.updateOrderStatus(1L, "completed"));
+		@DisplayName("aceita o status em minúsculas, normalizando antes de gravar")
+		void acceptsLowercaseStatus() {
+			CustomerOrder existing = order(1L, "PED-001", CustomerOrderStatus.PENDING);
+			when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(existing));
+			when(customerOrderRepository.save(existing)).thenReturn(existing);
 
-			verify(customerOrderRepository, never()).findById(any());
+			assertEquals(CustomerOrderStatus.COMPLETED,
+					customerOrderService.updateOrderStatus(1L, "completed").getStatus());
 		}
 
 		@Test
@@ -223,10 +248,19 @@ class CustomerOrderServiceTest {
 		}
 
 		@Test
-		@DisplayName("status inexistente interrompe antes de buscar o pedido")
+		@DisplayName("status inexistente vira ValidationException antes de buscar o pedido")
 		void rejectsUnknownStatus() {
-			assertThrows(IllegalArgumentException.class,
+			ValidationException exception = assertThrows(ValidationException.class,
 					() -> customerOrderService.updateOrderStatus(1L, "INEXISTENTE"));
+
+			assertEquals("The reported status does not exist: INEXISTENTE", exception.getDeveloperMessage());
+			verify(customerOrderRepository, never()).findById(any());
+		}
+
+		@Test
+		@DisplayName("status nulo vira ValidationException")
+		void rejectsNullStatus() {
+			assertThrows(ValidationException.class, () -> customerOrderService.updateOrderStatus(1L, null));
 
 			verify(customerOrderRepository, never()).findById(any());
 		}

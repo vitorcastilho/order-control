@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build:
     name: Build e testes
@@ -56,6 +60,17 @@ jobs:
         with:
           name: jacoco-report
           path: order-control/target/site/jacoco/
+
+      - name: Comenta a cobertura no pull request
+        if: github.event_name == 'pull_request'
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: ${{ github.workspace }}/order-control/target/site/jacoco/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Cobertura de testes
+          min-coverage-overall: 90
+          min-coverage-changed-files: 90
+          update-comment: true
 
       - name: Resumo da cobertura
         if: always()
