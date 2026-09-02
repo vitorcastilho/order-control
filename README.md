@@ -56,6 +56,20 @@ Zerar o estoque é permitido; ficar negativo, não. Os testes cobrem essa fronte
 
 `ApiVersionConfig` prefixa com `api/v1` apenas as classes do pacote `web.api.v1.controller`, em vez de repetir o prefixo em cada `@RequestMapping`. Uma futura `v2` convive com a `v1` mudando só o pacote.
 
+### Configuração externalizada, com default
+
+Banco e Redis são configurados por variável de ambiente com valor padrão:
+
+```yaml
+url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:order_control}
+username: ${DB_USER:postgres}
+password: ${DB_PASSWORD:postgres}
+```
+
+O `.env.example` documenta as variáveis disponíveis; o `.env` real fica fora do versionamento. Com os defaults, a aplicação sobe sem nenhuma configuração — e o mesmo conjunto de variáveis alimenta o `docker-compose`.
+
+**Onde essa escolha para de servir:** `.env` documenta quais variáveis existem, mas não resolve gestão de segredo. Em produção o certo é um gerenciador dedicado — Vault, AWS Secrets Manager, Docker secrets ou injeção pela própria plataforma. Aqui a decisão é deliberada pelo escopo: ambiente local, credencial de desenvolvimento.
+
 ### Migrations versionadas
 
 O schema é gerenciado por Flyway (`db/migration`), com `ddl-auto: none`. O Hibernate não altera schema — o banco só muda por migration revisada. O teste de contexto sobe contra um Postgres real no CI, então uma migration quebrada falha o build.
@@ -90,6 +104,9 @@ O pipeline também revelou, na primeira execução, um teste de contexto que nun
 git clone https://github.com/vitorcastilho/order-control
 cd order-control
 
+# opcional: ajuste as variáveis (há default para todas)
+cp .env.example .env
+
 # sobe Postgres 17 e Redis 7
 docker compose up -d
 
@@ -99,6 +116,9 @@ mvn spring-boot:run
 ```
 
 A API fica em `http://localhost:8080/api/v1`.
+
+**Documentação interativa:** `http://localhost:8080/swagger-ui.html`
+**Especificação OpenAPI:** `http://localhost:8080/v3/api-docs`
 
 **Rodar os testes:**
 
@@ -131,10 +151,16 @@ mvn verify -Dtest='!OrderControlApplicationTests'
 | `POST` | `/api/v1/customer-orders` | cria pedido e dá baixa no estoque |
 | `PATCH` | `/api/v1/customer-orders/{id}/status` | altera o status do pedido |
 
-A paginação usa `offset`, `limit` e `sortBy` como parâmetros de consulta. Os status possíveis são `PENDING`, `PROCESSING`, `COMPLETED` e `CANCELED`, aceitos em qualquer caixa.
+Todos os endpoints estão documentados no Swagger UI, com os códigos de resposta de cada operação. A paginação usa `offset`, `limit` e `sortBy` como parâmetros de consulta. Os status possíveis são `PENDING`, `PROCESSING`, `COMPLETED` e `CANCELED`, aceitos em qualquer caixa.
 
 ---
 
 ## Stack
 
-Java 17 · Spring Boot 3.4 · Spring Data JPA · Flyway · PostgreSQL 17 · Redis 7 · JUnit 5 · Mockito · JaCoCo · Docker Compose · GitHub Actions
+Java 17 · Spring Boot 3.4 · Spring Data JPA · Flyway · PostgreSQL 17 · Redis 7 · springdoc-openapi · JUnit 5 · Mockito · JaCoCo · Docker Compose · GitHub Actions
+
+---
+
+## Licença
+
+[MIT](LICENSE)

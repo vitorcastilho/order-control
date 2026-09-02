@@ -16,7 +16,6 @@ order-control/*.iml
 # Ignorar configurações específicas de IDE
 *.idea/
 *.vscode/
-*.env
 
 # Ignorar diretórios do Docker
 postgres/data/
@@ -26,3 +25,7 @@ postgres/data/
 *.tmp
 *.swp
 *.bak
+
+# Variáveis de ambiente locais (o .env.example é versionado)
+.env
+.env.local
